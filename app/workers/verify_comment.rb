@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class VerifyComment < ApplicationJob
   queue_as :default
 
@@ -5,9 +7,9 @@ class VerifyComment < ApplicationJob
 
   def perform(comment)
     if TRIGGER_WORDS.any? { |s| comment.body.include? s}
-      comment.update_attribute(:status, 'flagged')
+      comment.update_column(:status, 'flagged')
     else
-      comment.update_attribute(:status, 'approved')
+      comment.update_column(:status, 'approved')
     end
   end
 end

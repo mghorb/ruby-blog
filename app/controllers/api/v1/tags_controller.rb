@@ -1,18 +1,14 @@
 class Api::V1::TagsController < ApplicationController
 
   def index
-    @tags = Tag.joins(:articles).where(id: params[:id])
+    @tags = Tag.where('title ILIKE ?', params[:title])
     render json: @tags, status: 200
   end
 
-  def new
-    @tag = Tag.new
-  end
-
   def show
-    @tags = Tag.all
-    if @tags
-      render json: @tags, status: 200
+    @tag = Tag.where(id: params[:id])
+    if @tag
+      render json: @tag, status: 200
     else
       render json: {error: "Tags not found."}
     end
@@ -24,7 +20,7 @@ class Api::V1::TagsController < ApplicationController
     if @tag.save
       render json: @tag, status: 200
     else
-      render json: {error: "Tag not created."}
+      render json: {error: @tag.errors.full_messages.first}, status: 422
     end
   end
 
@@ -34,14 +30,14 @@ class Api::V1::TagsController < ApplicationController
     if @tag.update(tag_params)
       render json: @tag, status: 200
     else
-      render json: {error: "Tag cannot be updated."}
+      render json: {error: @tag.errors.full_messages.first}, status: 422
     end
   end
 
   def destroy
     @tag = Tag.find(params[:id])
     @tag.destroy
-    render json: "Tag deleted."
+    render nothing: true, status: 204
   end
 
   private

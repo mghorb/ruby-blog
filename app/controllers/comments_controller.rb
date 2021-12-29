@@ -4,7 +4,6 @@ class CommentsController < ApplicationController
     @article = Article.find(params[:article_id])
     @comment = @article.comments.create(comment_params)
 
-    VerifyComment.perform_later(@comment)
     redirect_to article_path(@article)
   end
 
@@ -18,7 +17,6 @@ class CommentsController < ApplicationController
     @comment = @article.comments.find(params[:id])
 
     if @comment.update(comment_params)
-      VerifyComment.perform_later(@comment)
       redirect_to article_path(@article)
     else
       render :edit
